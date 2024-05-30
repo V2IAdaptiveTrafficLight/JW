@@ -43,9 +43,9 @@ class VideoPlayer:
         file_path = self.get_file_path()
         duration = self.get_traffic_time()  # 입력된 재생 시간 가져오기
         
-        # 나중에 지울 코드
-        print("File path:", file_path)
-        print("Play duration (seconds):", duration)
+        # # 나중에 지울 코드
+        # print("File path:", file_path)
+        # print("Play duration (seconds):", duration)
 
     def get_file_path(self):
         return self.file_path
