@@ -7,7 +7,10 @@ from deep_sort_realtime.deepsort_tracker import DeepSort
 import threading
 import copy
 
-CONFIDENCE_THRESHOLD = 0.6 # 임계값
+import logging
+logging.getLogger("ultralytics").setLevel(logging.ERROR)
+
+CONFIDENCE_THRESHOLD = 0.5 # 임계값
 BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
 RED = (0, 0, 255)
@@ -56,7 +59,7 @@ def video_processing():
         while str(video_file) != "None":
             video_cap = cv2.VideoCapture(video_file)
             #writer = create_video_writer(video_cap, "output.mp4")
-            model = YOLO("bestm200epoch.pt")
+            model = YOLO("best.pt")
             tracker = DeepSort(max_age=50)
 
             personTraking = {} # 사람들의 위치를 저장할 딕셔너리
@@ -131,8 +134,13 @@ def video_processing():
 
                 if (start == 5 and not checking):
                     checking = True # 한번만 체크
+
                     for key in personTraking:
                         if (personTraking.get(key) != None and personTrakingTemp.get(key) != None and personTrakingTemp2.get(key)):
+                            print("여기1 : ", personTraking)
+                            print("여기2 : ", personTrakingTemp)
+                            print("여기3 : ", personTrakingTemp2)
+                            print(crossXmin, crossXmax)
                             if (personTraking[key] != personTrakingTemp2[key]):
                                 if(personTraking[key] >= crossXmin and personTraking[key] <= crossXmax):
                                     speed = (abs(personTraking[key]-personTrakingTemp[key])/(s-tempStart))
@@ -161,8 +169,6 @@ def video_processing():
                     personTrakingTemp = copy.deepcopy(personTraking)
                     tempStart = s
 
-                print(personTrakingTemp)
-
                 TrafficLight(frame)
 
                 cv2.imshow("Frame", frame)
@@ -176,6 +182,7 @@ def video_processing():
             cv2.destroyAllWindows()
 
         start = 0
+        max_clock = 0
         s = 0
         checking = False
         checking1 = False
@@ -188,8 +195,8 @@ def VideoLoad():
         player.run()
         video_file = player.get_file_path()
         PassTime = player.get_time()
-        print("Video file:", video_file)
-        print("time : ", PassTime)
+        print("Video file path :", video_file)
+        print("신호등 시간 : ", PassTime)
         time.sleep(1)
 
 # def Tracking():
